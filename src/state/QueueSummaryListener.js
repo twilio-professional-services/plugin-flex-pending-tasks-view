@@ -9,7 +9,6 @@ import { Actions } from './QueueSummaryState';
  */
 export class QueueSummaryListener {
 
-  _queues = []; // Keep queues locally to avoid need for redux store.
   _queuesLiveQuery = undefined;
   _tasksLiveQueries = new Map(); // Map queue_sid to filtered task LiveQuery
 
@@ -99,7 +98,6 @@ export class QueueSummaryListener {
       this._tasksSearch(queueResult);
       return queueResult;
     });
-    this._queues = queueResults;
     Manager.getInstance().store.dispatch(Actions.setQueues(queueResults));
   
     console.debug(`${queueResults.length} tr-queue results`);

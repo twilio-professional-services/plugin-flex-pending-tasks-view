@@ -1,11 +1,15 @@
 # Flex Pending Tasks View
 
-This plugin introduces a new Flex tab/SideNav to allow supervisors and admins to visualize all tasks that are waiting in queues, with totals and max age. It differs from the [Real-Time Queues View](https://www.twilio.com/docs/flex/end-user-guide/insights/real-time-queues-view) in that: 
+This plugin introduces a new Flex tab/SideNav (see first screenshot) to allow supervisors and admins to visualize all tasks that are waiting in queues, with totals and max age. It differs from the [Real-Time Queues View](https://www.twilio.com/docs/flex/end-user-guide/insights/real-time-queues-view) in that: 
 
 1. You can configure the screen to breakdown the number of tasks based on specific task attributes that are important to you. e.g. show me all the pending task totals broken down by the different `language` attribute values.
-2. You can drill into the list of pending tasks within each queue, and present specific task attributes that are meaningful to your solution. e.g. in addition to the Twilio Task SID, you might include your own internal identifier (if it's available as a task attribute) 
+2. You can drill into the list of pending tasks (second screenshot) within each queue, and present specific task attributes that are meaningful to your solution. e.g. in addition to the Twilio Task SID, you might include your own internal identifier (if it's available as a task attribute) 
 
 This gives a level of granularity beyond what the [Real-Time Queues View](https://www.twilio.com/docs/flex/end-user-guide/insights/real-time-queues-view) offers today.
+
+<img width="700px" src="screenshots/pending-tasks-side-nav.png"/>
+
+<img width="700px" src="screenshots/pending-tasks-expand-collapse.png"/>
 
 ## Known Limitations
 The plugin makes use of the [Flex InsightsClient](https://www.twilio.com/docs/flex/developer/ui/manager#insightsclient) to query the pre-existing `tr-queue` and `tr-task` indexes. Please note that the `InsightsClient` has certain [limits](https://www.twilio.com/docs/sync/limits#sync-insights-client-limits) in place, namely:
