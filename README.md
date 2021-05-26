@@ -21,7 +21,7 @@ The plugin makes use of the [Flex InsightsClient](https://www.twilio.com/docs/fl
 ## Plugin Configuration
 You can customize the Pending Tasks View by modifying the `CONFIG` object in the file, `src/utils/Constants.js`. e.g.
 
-```json
+```javascript
 export const CONFIG = {
   useLiveQuery: true, // Determines whether to query once and subscribe to updates, or poll using the same query repeatedly
   pollFrequencyInMillis: 30000, // Applicable only if useLiveQuery is false
