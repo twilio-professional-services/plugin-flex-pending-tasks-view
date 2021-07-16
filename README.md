@@ -11,6 +11,17 @@ This gives a level of granularity beyond what the [Real-Time Queues View](https:
 
 <img width="700px" src="screenshots/pending-tasks-expand-collapse.png"/>
 
+3. New Functionality.  You can now click on the Task Sid to re-assign this task to the current worker (Supervisor).
+
+<img width="600px" src="screenshots/pickTask.png"/>
+
+
+Requirements:  Create a New Manually Picked Tasks Queue.  Add new skill "manual" and only give Supervisor this skill. Update the main TR Workflow as shown here:
+
+<img width="400px" src="screenshots/manualTasksWorkflow.png"/>
+
+Note: Set a Worker Attribute called sid and set its value to the SID of the worker returned by Twilio 
+
 ## Known Limitations
 The plugin makes use of the [Flex InsightsClient](https://www.twilio.com/docs/flex/developer/ui/manager#insightsclient) to query the pre-existing `tr-queue` and `tr-task` indexes. Please note that the `InsightsClient` has certain [limits](https://www.twilio.com/docs/sync/limits#sync-insights-client-limits) in place, namely:
 
@@ -44,6 +55,8 @@ cd
 
 # If you use npm
 npm install
+cd serverless
+npm install
 ```
 
 Next, please install the [Twilio CLI](https://www.twilio.com/docs/twilio-cli/quickstart) by running:
@@ -57,20 +70,72 @@ Finally, install the [Flex Plugin extension](https://github.com/twilio-labs/plug
 ```bash
 twilio plugins:install @twilio-labs/plugin-flex
 ```
-
-## Development
-
-In order to develop locally, you can use the Webpack Dev Server by running (from the root plugin directory):
+Install the [Serverless toolkit](https://www.twilio.com/docs/labs/serverless-toolkit) for the Twilio CLI:
 
 ```bash
-Twilio flex:plugins:start
+twilio plugins:install @twilio-labs/plugin-serverless
+```
+
+## Serverless Functions
+
+### Functions Configuration
+
+Create the functions config file by copying `.env.example` to `.env` 
+
+```bash
+cd serverless
+cp .env.example .env
+```
+
+Open `.env` with your text editor and set the environment variables mentioned in the file.
+
+```
+TWILIO_ACCOUNT_SID = ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+TWILIO_AUTH_TOKEN = 9yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
+TWILIO_WORKSPACE_SID = WSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+### Deployment
+
+Deploy the function:
+
+```bash
+cd serverless
+twilio serverless:deploy --override-existing-project --runtime node12
+```
+After successfull deployment you should see at least the following:
+```bash
+✔ Serverless project successfully deployed
+Functions:
+  https://manual-pick-task-xxxx-dev.twil.io/update-task
+```
+
+Your function will now be present in the Twilio Functions Console and part of the "manual-pick-task" service. Copy the URL from the function. 
+
+
+## Flex Plugin
+
+### Development
+
+Create the plugin config file by copying `.env.example` to `.env` 
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and set the REACT_APP_SERVICE_BASE_URL variable to your Twilio Functions base url (this will be available after you deploy your function). In local development environment, it could be your localhost base url.
+
+In order to develop locally, you can use the Twilio CLI to run the plugin locally. Using your commandline run the following from the root dirctory of the plugin.
+
+```bash
+twilio flex:plugins:start
 ```
 
 This will automatically start up the Webpack Dev Server and open the browser for you. Your app will run on `http://localhost:3000`. If you want to change that you can do this by setting the `PORT` environment variable:
 
 When you make changes to your code, the browser window will be automatically refreshed.
 
-## Deploy
+### Deploy
 
 When you are ready to deploy your plugin, in your terminal run:
 ```

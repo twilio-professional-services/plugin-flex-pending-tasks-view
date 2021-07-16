@@ -11,7 +11,12 @@ import Typography from '@material-ui/core/Typography';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 
+import { StyledButton, TasksTableContainer } from './QueueSummaryView.Components';
+
 import { Utils } from '@twilio/flex-ui';
+
+import { Manager } from '@twilio/flex-ui';
+const manager = Manager.getInstance();
 
 import * as Constants from '../../utils/Constants';
 
@@ -23,7 +28,7 @@ const styles = {
   }
 };
 
-class QueueSummaryRow extends React.Component  {
+class QueueSummaryRow extends React.Component {
 
 
   constructor(props) {
@@ -37,35 +42,66 @@ class QueueSummaryRow extends React.Component  {
     this.setState(() => ({ open }));
   }
 
+  pickTask = async (task) => {
+    const state = manager.store.getState();
+    const flexState = state && state.flex;
+    const workerState = flexState && flexState.worker;
+    const workerSid = workerState && workerState.worker.sid;  
+    console.log('UPDATING TASK');
+
+    const fetchUrl = `${process.env.REACT_APP_SERVICE_BASE_URL}/update-task`;
+  
+    const fetchBody = {
+      Token: manager.store.getState().flex.session.ssoTokenPayload.token,
+      taskSid: task.task_sid,
+      workerSid
+    };
+    const fetchOptions = {
+      method: 'POST',
+      body: new URLSearchParams(fetchBody),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      }
+    };
+
+    try {
+      const response = await fetch(fetchUrl, fetchOptions);
+      await response.json();
+      console.debug('Task Updated');
+    } catch (error) {
+      console.error('Task Update Failed', error);
+    }
+  
+
+
+  }
+
   render() {
     const { queue, config, columns, classes } = this.props;
-    
+
 
 
     return (
       <React.Fragment>
         <TableRow key={queue.queue_sid} className={classes.root}>
           <TableCell>
-            <IconButton aria-label="expand row" size="small" onClick={() => this.onToggleOpen(!this.state.open)}>
-              {this.state.open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            <IconButton onClick={() => this.onToggleOpen(!this.state.open)}>
+              {this.state.open ? <KeyboardArrowUpIcon />  : <KeyboardArrowDownIcon />}
             </IconButton>
-          </TableCell>    
-          <TableCell component="th" scope="row">
+          </TableCell>
+          <TableCell>
             {queue.queue_name}
           </TableCell>
-          <TableCell>{queue.tasks ? queue.tasks.length : 0}</TableCell>  
+          <TableCell>{queue.tasks ? queue.tasks.length : 0}</TableCell>
           {this.renderQueueSummaryRowColumnData(queue, config[Constants.CONFIG_QUEUE_TASK_COLUMNS])}
         </TableRow>
         <TableRow key={queue.queue_sid + '_tasks'}>
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
             <Collapse in={this.state.open} timeout="auto" unmountOnExit>
-                <Typography variant="h6" gutterBottom component="div">
-                  Tasks
-                </Typography>
-                {this.renderTasksTable(queue.tasks, config[Constants.CONFIG_TASK_ATTRIBUTE_COLUMNS])}
+              {this.renderTasksTable(queue.tasks, config[Constants.CONFIG_TASK_ATTRIBUTE_COLUMNS])}
             </Collapse>
-          </TableCell>  
-        </TableRow>  
+          </TableCell>
+        </TableRow>
       </React.Fragment>
     );
   }
@@ -74,10 +110,10 @@ class QueueSummaryRow extends React.Component  {
     return (
       queueTaskColumns && Object.values(queueTaskColumns).map((column, index) => (
         <TableCell key={column}>
-          {queue.columnStats && queue.columnStats[index].size > 0 ? 
+          {queue.columnStats && queue.columnStats[index].size > 0 ?
             [...queue.columnStats[index]].map(([key, stats]) => (
-              <div key={key}>{key}: {stats.taskCount} ({(Utils.formatTimeDuration(new Date() - new Date(stats.oldestDateCreated), "short"))})</div>)) 
-            : ''} 
+              <div key={key}>{key}: {stats.taskCount} ({(Utils.formatTimeDuration(new Date() - new Date(stats.oldestDateCreated), "short"))})</div>))
+            : ''}
         </TableCell>
       ))
     );
@@ -85,35 +121,44 @@ class QueueSummaryRow extends React.Component  {
 
   renderTasksTable(tasks, taskAttributeColumns) {
     return (
-      <Table size="small" aria-label="tasks">
+      <TasksTableContainer>
+      <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Age</TableCell>
-            <TableCell>SID</TableCell>
+            <TableCell>Task Age</TableCell>
+            <TableCell>Task SID (Click to Pick)</TableCell>
             {taskAttributeColumns && Object.values(taskAttributeColumns).map((attribute) => (
               <TableCell key={attribute}>{attribute}</TableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {tasks && tasks.map((task) => 
+          {tasks && tasks.map((task) =>
             this.renderTasksTableRow(task, taskAttributeColumns)
           )}
         </TableBody>
       </Table>
+      </TasksTableContainer>
     );
   }
 
   renderTasksTableRow(task, taskAttributeColumns) {
+    console.log('TASK ROW:', task);
     return (
-      <TableRow key={task.task_sid}>
-        <TableCell component="th" scope="row">
+      <TableRow key={task.task_sid} >
+        <TableCell>
           {Utils.formatTimeDuration(new Date() - new Date(task.date_created), "short")}
         </TableCell>
-        <TableCell>{task.task_sid}</TableCell>
+        <TableCell>
+          <StyledButton
+            onClick={() => {
+              this.pickTask(task);
+            }}
+          > {task.task_sid.substring(0,9)}... </StyledButton>
+        </TableCell>
         {taskAttributeColumns && Object.values(taskAttributeColumns).map((attribute) => (
           <TableCell key={attribute}>
-            {task.attributes && task.attributes[attribute] ? task.attributes[attribute] : ''} 
+            {task.attributes && task.attributes[attribute] ? task.attributes[attribute] : ''}
           </TableCell>
         ))}
       </TableRow>

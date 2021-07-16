@@ -64,3 +64,4 @@ typings/
 appConfig.js
 pluginsService.js
 build/
+.twilio-functions
