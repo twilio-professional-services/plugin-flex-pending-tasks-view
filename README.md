@@ -11,16 +11,15 @@ This gives a level of granularity beyond what the [Real-Time Queues View](https:
 
 <img width="700px" src="screenshots/pending-tasks-expand-collapse.png"/>
 
-3. New Functionality.  You can now click on the Task Sid to re-assign this task to the current worker (Supervisor).
+3. New Functionality.  You can now click on the Task Sid to re-assign this task to the a worker. A modal dialog will list the available workers.
 
 <img width="600px" src="screenshots/pickTask.png"/>
 
 
 Requirements:  Create a New Manually Picked Tasks Queue.  Add new skill "manual" and only give Supervisor this skill. Update the main TR Workflow as shown here:
 
-<img width="400px" src="screenshots/manualTasksWorkflow.png"/>
+<img width="600px" src="screenshots/manualTaskWorkflowContactUri.png"/>
 
-Note: Set a Worker Attribute called sid and set its value to the SID of the worker returned by Twilio 
 
 ## Known Limitations
 The plugin makes use of the [Flex InsightsClient](https://www.twilio.com/docs/flex/developer/ui/manager#insightsclient) to query the pre-existing `tr-queue` and `tr-task` indexes. Please note that the `InsightsClient` has certain [limits](https://www.twilio.com/docs/sync/limits#sync-insights-client-limits) in place, namely:
