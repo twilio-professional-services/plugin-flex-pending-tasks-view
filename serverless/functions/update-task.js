@@ -16,6 +16,7 @@ exports.handler = JWEValidator(async function (context, event, callback) {
 	// parse data form the incoming http request
 	const originalTaskSid = event.taskSid;
 	const workerSid = event.workerSid;
+	const workerContactUri = event.workerContactUri;
 	try {
 		// retrieve attributes of the original task
 		let originalTask = await client.taskrouter
@@ -27,6 +28,7 @@ exports.handler = JWEValidator(async function (context, event, callback) {
 		//Set attributes for routing to specific worker in "Manual" task queue
 		newAttributes.manual = 1;
 		newAttributes.worker_sid = workerSid;
+		newAttributes.worker_contact_uri = workerContactUri;
 
 		// update task 
 		await client.taskrouter
