@@ -8,12 +8,16 @@ const ACTION_HANDLE_TASK_REMOVED = "HANDLE_TASK_REMOVED";
 const ACTION_SET_SELECTED_QUEUE = "SET_SELECTED_QUEUE"; // Not used
 const ACTION_RECALCULATE_FILTERS = "RECALCULATE_FILTERS"; // Not used
 
+const ACTION_SET_SELECTED_TASK = 'SET_SELECTED_TASK';
+const ACTION_REMOVE_SELECTED_TASK = 'REMOVE_SELECTED_TASK';
+
 
 const initialState = {
   filters: [],
   queues: undefined,
   selectedQueueSid: undefined,
-  config: Constants.CONFIG 
+  selectedTaskSid: undefined,
+  config: Constants.CONFIG
 };
 
 // Define plugin actions
@@ -28,11 +32,11 @@ export class Actions {
   });
   static setQueueTasks = (queueSid, tasks) => ({
     type: ACTION_SET_QUEUE_TASKS,
-    payload: { 
+    payload: {
       queueSid,
       tasks
     }
-  });  
+  });
   static handleTaskUpdated = (task) => ({
     type: ACTION_HANDLE_TASK_UPDATED,
     task
@@ -45,6 +49,14 @@ export class Actions {
     type: ACTION_SET_SELECTED_QUEUE,
     selectedQueueSid
   });
+  static setSelectedTask = (selectedTaskSid) => ({
+    type: ACTION_SET_SELECTED_TASK,
+    selectedTaskSid
+  });
+  static removeSelectedTask = () => ({
+    type: ACTION_REMOVE_SELECTED_TASK
+  });
+
   static recalculateFilters = () => ({
     type: ACTION_RECALCULATE_FILTERS
   });
@@ -57,7 +69,7 @@ export function reduce(state = initialState, action) {
       return {
         ...state,
         filters: action.filters,
-      };    
+      };
     case ACTION_SET_QUEUES:
       return {
         ...state,
@@ -71,14 +83,14 @@ export function reduce(state = initialState, action) {
           if (item.queue_sid === action.payload.queueSid) {
             return {
               ...item,
-              tasks: action.payload.tasks, 
+              tasks: action.payload.tasks,
               columnStats: getTaskStatsForColumns(action.payload.tasks, state.config)
             }
           }
           // Non matching queues left untouched
           return item;
         }),
-      };    
+      };
     case ACTION_HANDLE_TASK_UPDATED:
       return {
         ...state,
@@ -99,7 +111,7 @@ export function reduce(state = initialState, action) {
           }
           return queue;
         }),
-      };  
+      };
     case ACTION_HANDLE_TASK_REMOVED:
       return {
         ...state,
@@ -115,24 +127,34 @@ export function reduce(state = initialState, action) {
           }
           return queue;
         }),
-      };  
+      };
     case ACTION_SET_SELECTED_QUEUE:
       return {
         ...state,
         selectedQueueSid: action.selectedQueueSid,
-      };  
+      };
+    case ACTION_SET_SELECTED_TASK:
+      return {
+        ...state,
+        selectedTaskSid: action.selectedTaskSid,
+      };
+    case ACTION_REMOVE_SELECTED_TASK:
+      return {
+        ...state,
+        selectedTaskSid: undefined,
+      };
     case ACTION_RECALCULATE_FILTERS:
       return {
         ...state,
         filters: {
           ...filters
         }
-      };       
+      };
     default:
       return state;
   }
 
-  function getTaskStatsForColumns (tasks, config) {
+  function getTaskStatsForColumns(tasks, config) {
 
     const columns = config[Constants.CONFIG_QUEUE_TASK_COLUMNS];
 
@@ -160,7 +182,7 @@ export function reduce(state = initialState, action) {
       });
       const columnStatsMapDesc = new Map([...columnStatsMap.entries()].sort((a, b) => b.taskCount - a.tasksCount));
 
-      return columnStatsMapDesc; 
+      return columnStatsMapDesc;
     });
     return columnStats;
   }

@@ -43,10 +43,10 @@ export class WorkerListener {
         this._updateStateWorkers(q.getItems());
 
         q.on('itemRemoved', (item) => {
-          this._onWorkerRemoved(item);
+          this._onWorkerItemRemoved(item);
         });
         q.on('itemUpdated', (item) => {
-          this._onWorkerUpdated(item);
+          this._onWorkerItemUpdated(item);
         });
       })
       .catch(function (e) {
@@ -60,17 +60,15 @@ export class WorkerListener {
       return workerResult;
     });
     Manager.getInstance().store.dispatch(Actions.setWorkers(workerList));
-  
     console.debug(`${workerList.length} tr-worker results`);
   };
   
   static _constructWorkerQuery() {
     //Only get available workers
-    // Other search criteria?
     return `data.activity_name == "Available"`;
   };
   
-  _onWorkerUpdated(workerItem) {
+  _onWorkerItemUpdated(workerItem) {
     // insights query item contains { key: <sid>, value: <worker obj>}
     const worker = workerItem.value;
     console.log(`Worker updated: ${workerItem.key}`);
@@ -78,7 +76,7 @@ export class WorkerListener {
     Manager.getInstance().store.dispatch(Actions.handleWorkerUpdated(worker));
   }
 
-  _onWorkerRemoved(workerItem) {
+  _onWorkerItemRemoved(workerItem) {
     console.log(`Worker removed: ${workerItem.key}`);
     //Remove worker from our state
     Manager.getInstance().store.dispatch(Actions.handleWorkerRemoved(workerItem.key));

@@ -45,7 +45,7 @@ class AssignTaskDialog extends React.Component {
   closeDialog = () => {
     Actions.invokeAction('SetComponentState', {
       name: 'AssignTaskDialog',
-      state: { isOpen: false, taskSid: undefined }
+      state: { isOpen: false }
     });
   }
 
@@ -118,7 +118,7 @@ class AssignTaskDialog extends React.Component {
               <MenuItem
                 key={worker.friendly_name}
                 value={worker.friendly_name}
-              > {worker.friendly_name}
+              > {worker.friendly_name} [Skills: {worker.attributes.routing.skills.toString()}]
               </MenuItem>
             ))}
 
@@ -142,10 +142,9 @@ const mapStateToProps = state => {
   const componentViewStates = state.flex.view.componentViewStates;
   const assignTaskDialogState = componentViewStates && componentViewStates.AssignTaskDialog;
   const isOpen = assignTaskDialogState && assignTaskDialogState.isOpen;
-  const taskSid = assignTaskDialogState && assignTaskDialogState.taskSid;
   return {
     isOpen,
-    taskSid,
+    taskSid: state?.[namespace].queueSummary.selectedTaskSid,
     workers: state?.[namespace].workerList.workers || []
   };
 };

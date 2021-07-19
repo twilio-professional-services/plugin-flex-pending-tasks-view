@@ -1,4 +1,3 @@
-import * as Constants from '../utils/Constants';
 
 const ACTION_SET_WORKERS = "SET_WORKERS";
 const ACTION_HANDLE_WORKER_UPDATED = "HANDLE_WORKER_UPDATED";
@@ -6,7 +5,6 @@ const ACTION_HANDLE_WORKER_REMOVED = "HANDLE_WORKER_REMOVED";
 
 const initialState = {
   workers: undefined,
-  config: Constants.CONFIG
 };
 
 // Define plugin actions

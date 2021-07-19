@@ -15,6 +15,8 @@ import { StyledButton, TasksTableContainer } from './QueueSummaryView.Components
 
 import { Actions, Utils } from '@twilio/flex-ui';
 
+import {Actions as QueueSummaryActions } from '../../state/QueueSummaryState';
+
 import { Manager } from '@twilio/flex-ui';
 const manager = Manager.getInstance();
 
@@ -43,10 +45,11 @@ class QueueSummaryRow extends React.Component {
   }
 
   assignTaskToWorker = (taskSid) => {
+    manager.store.dispatch(QueueSummaryActions.setSelectedTask(taskSid));
     console.log('OPEN ASSIGN TASK DIALOG for task:', taskSid);
     Actions.invokeAction('SetComponentState', {
       name: 'AssignTaskDialog',
-      state: { isOpen: true, taskSid }
+      state: { isOpen: true }
     });
   }
 
