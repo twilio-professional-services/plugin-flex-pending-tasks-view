@@ -123,7 +123,7 @@ Create the plugin config file by copying `.env.example` to `.env`
 cp .env.example .env
 ```
 
-Edit `.env` and set the REACT_APP_SERVICE_BASE_URL variable to your Twilio Functions base url (this will be available after you deploy your function). In local development environment, it could be your localhost base url.
+Edit `.env` and set the REACT_APP_SERVICE_BASE_URL variable to your Twilio Functions base url (everything up until the first forward slash; this will be available after you deploy your function as mentioned above). In local development environment, it could be your localhost base url.
 
 In order to develop locally, you can use the Twilio CLI to run the plugin locally. Using your commandline run the following from the root dirctory of the plugin.
 
