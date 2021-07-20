@@ -65,5 +65,9 @@ appConfig.js
 pluginsService.js
 build/
 
+<<<<<<< HEAD
 **/.DS_Store
 .twilio-functions
+=======
+**/.DS_Store
+>>>>>>> master
