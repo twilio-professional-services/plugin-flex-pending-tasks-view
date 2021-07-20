@@ -22,7 +22,7 @@ This will invoke a function to update the task attributes.
 
 Requirements:  Create a New Manually Picked Tasks Queue.  Add new skill "manual" and only assign this skill to Supervisor and/or selected workers. Update the main TaskRouter Workflow as shown here:
 
-<img width="600px" src="screenshots/manualTaskWorkflowContactUri.png"/>
+<img width="600px" src="screenshots/manualTasksWorkflow.png"/>
 
 On the first step of the Workflow Filter use:
 
@@ -34,7 +34,7 @@ Set Priority: `100` (or "highest" value)
 
 Use Worker Expression
 ```
-task.worker_contact_uri = worker.contact_uri
+task.worker_sid = worker.sid
 ```
 
 ## Known Limitations

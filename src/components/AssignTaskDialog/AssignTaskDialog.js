@@ -57,12 +57,10 @@ class AssignTaskDialog extends React.Component {
   }
 
   handleAssignTask = async () => {
-    const workerName = this.state.selectedWorker;
+    const workerSid = this.state.selectedWorker;
     const taskSid = this.props.taskSid;
     //Only update if worker selected
-    if (workerName && workerName !== DefaultValue) {
-      //Worker contact_uri = "client:<name>"
-      const workerContactUri = "client:" + workerName;
+    if (workerSid && workerSid !== DefaultValue) {
       console.log('UPDATING TASK:', taskSid);
 
       const fetchUrl = `${process.env.REACT_APP_SERVICE_BASE_URL}/update-task`;
@@ -70,7 +68,7 @@ class AssignTaskDialog extends React.Component {
       const fetchBody = {
         Token: manager.store.getState().flex.session.ssoTokenPayload.token,
         taskSid,
-        workerContactUri
+        workerSid
       };
       const fetchOptions = {
         method: 'POST',
@@ -116,9 +114,9 @@ class AssignTaskDialog extends React.Component {
             <MenuItem value={DefaultValue}>SELECT WORKER</MenuItem>
             {this.props.workers.map((worker) => (
               <MenuItem
-                key={worker.friendly_name}
-                value={worker.friendly_name}
-              > {worker.friendly_name} [Skills: {worker.attributes.routing.skills.toString()}]
+                key={worker.worker_sid}
+                value={worker.worker_sid}
+              > {worker.friendly_name} [Skills: {worker.attributes?.routing?.skills ? worker.attributes.routing.skills.toString() : "None"}]
               </MenuItem>
             ))}
 
