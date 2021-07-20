@@ -13,7 +13,9 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 
 import { StyledButton, TasksTableContainer } from './QueueSummaryView.Components';
 
-import { Utils } from '@twilio/flex-ui';
+import { Actions, Utils } from '@twilio/flex-ui';
+
+import {Actions as QueueSummaryActions } from '../../state/QueueSummaryState';
 
 import { Manager } from '@twilio/flex-ui';
 const manager = Manager.getInstance();
@@ -42,51 +44,24 @@ class QueueSummaryRow extends React.Component {
     this.setState(() => ({ open }));
   }
 
-  pickTask = async (task) => {
-    const state = manager.store.getState();
-    const flexState = state && state.flex;
-    const workerState = flexState && flexState.worker;
-    const workerSid = workerState && workerState.worker.sid;  
-    console.log('UPDATING TASK');
-
-    const fetchUrl = `${process.env.REACT_APP_SERVICE_BASE_URL}/update-task`;
-  
-    const fetchBody = {
-      Token: manager.store.getState().flex.session.ssoTokenPayload.token,
-      taskSid: task.task_sid,
-      workerSid
-    };
-    const fetchOptions = {
-      method: 'POST',
-      body: new URLSearchParams(fetchBody),
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-      }
-    };
-
-    try {
-      const response = await fetch(fetchUrl, fetchOptions);
-      await response.json();
-      console.debug('Task Updated');
-    } catch (error) {
-      console.error('Task Update Failed', error);
-    }
-  
-
-
+  assignTaskToWorker = (taskSid) => {
+    manager.store.dispatch(QueueSummaryActions.setSelectedTask(taskSid));
+    console.log('OPEN ASSIGN TASK DIALOG for task:', taskSid);
+    Actions.invokeAction('SetComponentState', {
+      name: 'AssignTaskDialog',
+      state: { isOpen: true }
+    });
   }
 
   render() {
     const { queue, config, columns, classes } = this.props;
-
-
 
     return (
       <React.Fragment>
         <TableRow key={queue.queue_sid} className={classes.root}>
           <TableCell>
             <IconButton onClick={() => this.onToggleOpen(!this.state.open)}>
-              {this.state.open ? <KeyboardArrowUpIcon />  : <KeyboardArrowDownIcon />}
+              {this.state.open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
           </TableCell>
           <TableCell>
@@ -122,28 +97,27 @@ class QueueSummaryRow extends React.Component {
   renderTasksTable(tasks, taskAttributeColumns) {
     return (
       <TasksTableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Task Age</TableCell>
-            <TableCell>Task SID (Click to Pick)</TableCell>
-            {taskAttributeColumns && Object.values(taskAttributeColumns).map((attribute) => (
-              <TableCell key={attribute}>{attribute}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {tasks && tasks.map((task) =>
-            this.renderTasksTableRow(task, taskAttributeColumns)
-          )}
-        </TableBody>
-      </Table>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Task Age</TableCell>
+              <TableCell>Task SID (Click to Pick)</TableCell>
+              {taskAttributeColumns && Object.values(taskAttributeColumns).map((attribute) => (
+                <TableCell key={attribute}>{attribute}</TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tasks && tasks.map((task) =>
+              this.renderTasksTableRow(task, taskAttributeColumns)
+            )}
+          </TableBody>
+        </Table>
       </TasksTableContainer>
     );
   }
 
   renderTasksTableRow(task, taskAttributeColumns) {
-    console.log('TASK ROW:', task);
     return (
       <TableRow key={task.task_sid} >
         <TableCell>
@@ -152,9 +126,9 @@ class QueueSummaryRow extends React.Component {
         <TableCell>
           <StyledButton
             onClick={() => {
-              this.pickTask(task);
+              this.assignTaskToWorker(task.task_sid);
             }}
-          > {task.task_sid.substring(0,9)}... </StyledButton>
+          > {task.task_sid.substring(0, 9)}... </StyledButton>
         </TableCell>
         {taskAttributeColumns && Object.values(taskAttributeColumns).map((attribute) => (
           <TableCell key={attribute}>

@@ -8,6 +8,7 @@ import reducers, { namespace } from "./state";
 import { ContextUtil } from "./utils/ContextUtil";
 import QueueSummaryView from "./components/QueueSummary";
 const PLUGIN_NAME = "FlexTasksTabWithFiltersPlugin";
+import AssignTaskDialog from "./components/AssignTaskDialog/AssignTaskDialog";
 
 export default class FlexPendingTasksViewPlugin extends FlexPlugin {
   constructor() {
@@ -46,6 +47,10 @@ export default class FlexPendingTasksViewPlugin extends FlexPlugin {
         </SideLink>,
         { sortOrder: 2 }
       );
+
+      flex.SideNav.Content.add(<AssignTaskDialog
+        key="assign-task-modal"
+      />, { sortOrder: 100 });
     }
   }
 

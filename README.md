@@ -11,16 +11,31 @@ This gives a level of granularity beyond what the [Real-Time Queues View](https:
 
 <img width="700px" src="screenshots/pending-tasks-expand-collapse.png"/>
 
-3. New Functionality.  You can now click on the Task Sid to re-assign this task to the current worker (Supervisor).
+3. Manually assigning tasks to workers (aka "Cherry Picking"). You can now click on the Task Sid to re-assign this task to the a worker. A modal dialog will list the available workers.
 
 <img width="600px" src="screenshots/pickTask.png"/>
 
+On this modal dialog, select the worker to assign the task to.  
+This will invoke a function to update the task attributes.
 
-Requirements:  Create a New Manually Picked Tasks Queue.  Add new skill "manual" and only give Supervisor this skill. Update the main TR Workflow as shown here:
+<img width="600px" src="screenshots/selectWorker.png"/>
 
-<img width="400px" src="screenshots/manualTasksWorkflow.png"/>
+Requirements:  Create a New Manually Picked Tasks Queue.  Add new skill "manual" and only assign this skill to Supervisor and/or selected workers. Update the main TaskRouter Workflow as shown here:
 
-Note: Set a Worker Attribute called sid and set its value to the SID of the worker returned by Twilio 
+<img width="600px" src="screenshots/manualTaskWorkflowContactUri.png"/>
+
+On the first step of the Workflow Filter use:
+
+Matching Tasks: `manual == 1`
+
+Task Queue: `Manually Picked Tasks`
+
+Set Priority: `100` (or "highest" value)
+
+Use Worker Expression
+```
+task.worker_contact_uri = worker.contact_uri
+```
 
 ## Known Limitations
 The plugin makes use of the [Flex InsightsClient](https://www.twilio.com/docs/flex/developer/ui/manager#insightsclient) to query the pre-existing `tr-queue` and `tr-task` indexes. Please note that the `InsightsClient` has certain [limits](https://www.twilio.com/docs/sync/limits#sync-insights-client-limits) in place, namely:
