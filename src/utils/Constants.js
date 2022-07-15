@@ -12,7 +12,7 @@ export const CONFIG_POLL_FREQUENCY = 'pollFrequencyInMillis';
 export const CONFIG = {
   useLiveQuery: true, // Determines whether to query once and subscribe to updates, or poll using the same query repeatedly
   pollFrequencyInMillis: 30000, // Applicable only if useLiveQuery is false
-  queueTaskColumns: ['myRelevantTaskAttribute', 'someOtherTaskAttribute'], // Used to break down the totals at the queue level
-  taskAttributeColumns: ['myInternalCustomerIdentifierAttribute', 'myRelevantTaskAttribute'], // Used to present the list of tasks
+  queueTaskColumns: ['office', 'callType'], // Used to break down the totals at the queue level
+  taskAttributeColumns: ['office', 'callType'], // Used to present the list of tasks
 };
 

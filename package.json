@@ -1,18 +1,19 @@
 {
   "name": "plugin-flex-pending-tasks-view",
-  "version": "1.0.0",
+  "version": "15.0.0",
   "private": true,
   "scripts": {
     "postinstall": "flex-plugin pre-script-check"
   },
   "dependencies": {
-    "flex-plugin-scripts": "4.7.5-beta.0",
     "react": "16.5.2",
     "react-dom": "16.5.2",
-    "react-redux": "^7.2.4"
+    "@twilio/flex-plugin-scripts": "5.1.2"
   },
   "devDependencies": {
     "@twilio/flex-ui": "^1",
+    "@material-ui/core": "^1.0.0",
+    "@material-ui/icons": "^2.0.3",
     "react-test-renderer": "16.5.2"
   }
 }

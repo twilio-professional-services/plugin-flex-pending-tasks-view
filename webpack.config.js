@@ -1,11 +1,12 @@
 module.exports = (config, { isProd, isDev, isTest }) => {
+
   /**
    * Customize the webpack by modifying the config object.
    * Consult https://webpack.js.org/configuration for more information
    */
-  if (!config.externals) {
-    config.externals = {};
-  }
+  // if (!config.externals) {
+  //   config.externals = {};
+  // }
 
   // Didn't work
   /*

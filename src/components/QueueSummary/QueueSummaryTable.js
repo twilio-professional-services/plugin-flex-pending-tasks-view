@@ -22,11 +22,21 @@ const QueueSummaryTable = (props) => (
       </TableRow>
     </TableHead>
     <TableBody>
-      {props.queues && Object.values(props.queues).map((queue) => (
+      {props.queues && Object.values(props.queues).sort(compareQueues).map((queue) => (
         <QueueSummaryRow key={queue.queue_sid} queue={queue} config={props.config} />
       ))}
     </TableBody>
   </Table>
 );
+
+const compareQueues = (a, b) => {
+  if (a.queue_name < b.queue_name) {
+    return -1;
+  } else if (a.queue_name > b.queue_name) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
 
 export default QueueSummaryTable;

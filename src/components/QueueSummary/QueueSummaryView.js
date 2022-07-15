@@ -29,17 +29,19 @@ class QueueSummaryView extends React.Component {
   componentDidMount() {
     //Only need timer if not using LiveQuery/QueueSummaryListener
     if (!CONFIG.useLiveQuery) {
-      QueueSummaryService.init();
+      QueueSummaryService.init(this.props.selectedQueues);
       this.refreshTimer = window.setInterval(() => {
-        QueueSummaryService.refresh();
+        QueueSummaryService.refresh(this.props.selectedQueues);
       }, 
       CONFIG.pollFrequencyInMillis ? CONFIG.pollFrequencyInMillis : DEFAULT_POLL_FREQUENCY_IN_MILLIS);
     } else {
-      this.queueSummaryListener.queuesSearch();
+      this.queueSummaryListener.queuesSearch(this.props.selectedQueues);
     }
   }
 
-  componentDidUpdate() {}
+  componentDidUpdate() {
+    // TODO: React to the queue filters changing!
+  }
 
   componentWillUnmount() {
     if (!CONFIG.useLiveQuery) {
@@ -63,9 +65,13 @@ class QueueSummaryView extends React.Component {
 
 const mapStateToProps = (state) => {
   const customReduxStore = state?.[namespace];
+  // Honor any filters applied via Queue Stats UI
+  // TODO: Replicate selector component from https://github.com/twilio-professional-services/plugin-queues-view-filters
+  let selectedQueues = state['flex'].worker.attributes['queues_view_filters']; 
 
   return {
-    queueSummary: customReduxStore.queueSummary
+    queueSummary: customReduxStore.queueSummary,
+    selectedQueues
   }
 }
 

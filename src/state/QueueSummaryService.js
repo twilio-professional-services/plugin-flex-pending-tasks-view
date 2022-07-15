@@ -9,20 +9,20 @@ export class QueueSummaryService {
 
   static _isInitialized = false;
 
-  static init() {
+  static init(selectedQueues) {
 
     if (this._isInitialized) {
       return;
     }
 
-    QueueSummaryService._queuesSearch();
+    QueueSummaryService._queuesSearch(selectedQueues);
 
     this._initialized = true;
   }
 
-  static refresh() {
+  static refresh(selectedQueues) {
     if (!QueueSummaryService._isInitialized) {
-      QueueSummaryService._queuesSearch();
+      QueueSummaryService._queuesSearch(selectedQueues);
     }
   }
 
@@ -30,12 +30,12 @@ export class QueueSummaryService {
     QueueSummaryService._isInitialized = false;
   }
 
-  static _queuesSearch() {
+  static _queuesSearch(selectedQueues) {
     Manager.getInstance()
       .insightsClient.instantQuery("tr-queue")
       .then((q) => {
         q.on("searchResult", this._setQueueList);
-        q.search(QueueSummaryService._constructQueueQuery());
+        q.search(QueueSummaryService._constructQueueQuery(selectedQueues));
       });
   };
 
@@ -56,8 +56,12 @@ export class QueueSummaryService {
   
   
   
-  static _constructQueueQuery() {
-    return ''; // Get all queues for now
+  static _constructQueueQuery(selectedQueues) {
+    if (selectedQueues) {
+      return `data.queue_name IN ${JSON.stringify(selectedQueues)}`
+    } else {
+      return ''; // Get all queues for now
+    }
   };
   
   

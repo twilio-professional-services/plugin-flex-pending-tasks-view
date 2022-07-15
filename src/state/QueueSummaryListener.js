@@ -50,16 +50,16 @@ export class QueueSummaryListener {
     }
   }  
 
-  queuesSearch() {
+  queuesSearch(selectedQueues) {
     // See Flex-Monorepo SupervisorWorkerListener for inspiration
-    this._subscribeQueuesLiveQuery();
+    this._subscribeQueuesLiveQuery(selectedQueues);
   }
 
-  _subscribeQueuesLiveQuery() {
+  _subscribeQueuesLiveQuery(selectedQueues) {
     Manager
       .getInstance()
       .insightsClient
-      .liveQuery("tr-queue", QueueSummaryListener._constructQueueQuery())
+      .liveQuery("tr-queue", QueueSummaryListener._constructQueueQuery(selectedQueues))
       .then((q) => {
 
         this._queuesLiveQuery = q;
@@ -105,8 +105,13 @@ export class QueueSummaryListener {
   
   
   
-  static _constructQueueQuery() {
-    return ''; // Get all queues for now
+  static _constructQueueQuery(selectedQueues) {
+
+    if (selectedQueues) {
+      return `data.queue_name IN ${JSON.stringify(selectedQueues)}`
+    } else {
+      return ''; // Get all queues for now
+    }
   };
   
   

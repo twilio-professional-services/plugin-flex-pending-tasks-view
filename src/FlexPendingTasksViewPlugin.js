@@ -1,6 +1,7 @@
 import React from "react";
 import { VERSION, SideLink, Actions } from "@twilio/flex-ui";
-import { FlexPlugin } from "flex-plugin";
+import { FlexPlugin } from '@twilio/flex-plugin';
+
 
 
 // My imports

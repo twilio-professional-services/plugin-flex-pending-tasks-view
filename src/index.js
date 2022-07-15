@@ -1,4 +1,4 @@
-import * as FlexPlugin from 'flex-plugin';
+import * as FlexPlugin from '@twilio/flex-plugin';
 import FlexPendingTasksViewPlugin from './FlexPendingTasksViewPlugin';
 
 FlexPlugin.loadPlugin(FlexPendingTasksViewPlugin);
