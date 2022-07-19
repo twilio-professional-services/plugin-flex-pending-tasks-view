@@ -73,7 +73,7 @@ export class QueueSummaryListener {
         });
       })
       .catch(function (e) {
-        console.log('Error when subscribing to live updates on queue search', e);
+        console.error('Error when subscribing to live updates on queue search', e);
       });
   }
 
@@ -138,24 +138,24 @@ export class QueueSummaryListener {
         });
       })
       .catch(function (e) {
-        console.log('Error when subscribing to live updates on task search', e);
+        console.error('Error when subscribing to live updates on task search', e);
       });
   }
 
   _onQueueTaskItemUpdated(taskItem) {
     const task = taskItem.value;
-    console.log(`Queue task item updated: SID: ${JSON.stringify(task.task_sid)} | Queue: ${task.queue_name}`);
+    console.debug(`Queue task item updated: SID: ${JSON.stringify(task.task_sid)} | Queue: ${task.queue_name}`);
     // We need to find the queue this task resides in, then update/add the task within our state
     Manager.getInstance().store.dispatch(Actions.handleTaskUpdated(task));
 
   }
 
   _onQueueTaskItemRemoved(taskItem) {
-    console.log(`Queue task item removed: SID: ${taskItem.key}`);
+    console.debug(`Queue task item removed: SID: ${taskItem.key}`);
     // We need to find the queue this task resides in, then remove the task from our state
     Manager.getInstance().store.dispatch(Actions.handleTaskRemoved(taskItem.key));
   }
-  
+
   _updateStateTasksForQueue(queue, insightsTasks) {
     const tasks = Object.keys(insightsTasks)
       .map(taskSid => insightsTasks[taskSid])

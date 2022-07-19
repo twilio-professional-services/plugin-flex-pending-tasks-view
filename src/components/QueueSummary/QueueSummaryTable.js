@@ -22,9 +22,14 @@ const QueueSummaryTable = (props) => (
       </TableRow>
     </TableHead>
     <TableBody>
-      {props.queues && Object.values(props.queues).sort(compareQueues).map((queue) => (
-        <QueueSummaryRow key={queue.queue_sid} queue={queue} config={props.config} />
-      ))}
+      {props.queues && props.queues.length > 0 ?
+        Object.values(props.queues).sort(compareQueues).map((queue) => (
+          <QueueSummaryRow key={queue.queue_sid} queue={queue} config={props.config} />
+        )) :
+        <TableRow key='no-queues'>
+          <TableCell colSpan={2+props.config[Constants.CONFIG_QUEUE_TASK_COLUMNS].length}>No queues</TableCell>
+        </TableRow>
+      }
     </TableBody>
   </Table>
 );

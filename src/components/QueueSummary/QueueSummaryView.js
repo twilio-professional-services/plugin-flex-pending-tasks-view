@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withTheme } from "@twilio/flex-ui";
 import { namespace } from '../../state';
 
+
 import QueueSummaryTable from "./QueueSummaryTable";
 import { QueueSummaryTableContainer } from './QueueSummaryView.Components';
 import { QueueSummaryService } from '../../state/QueueSummaryService';

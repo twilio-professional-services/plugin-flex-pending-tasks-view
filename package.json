@@ -14,6 +14,7 @@
     "@twilio/flex-ui": "^1",
     "@material-ui/core": "^1.0.0",
     "@material-ui/icons": "^2.0.3",
-    "react-test-renderer": "16.5.2"
+    "react-test-renderer": "16.5.2",
+    "eventemitter3": "4.0.0"
   }
 }
