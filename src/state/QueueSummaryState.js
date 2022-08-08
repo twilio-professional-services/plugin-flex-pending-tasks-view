@@ -1,3 +1,4 @@
+import { ActionsImpl } from '@twilio/flex-ui';
 import * as Constants from '../utils/Constants';
 
 const ACTION_SET_FILTERS = "SET_FILTERS"; // Not used
@@ -41,9 +42,12 @@ export class Actions {
     type: ACTION_HANDLE_TASK_UPDATED,
     task
   });
-  static handleTaskRemoved = (taskSid) => ({
+  static handleTaskRemoved = (queueSid, taskSid) => ({
     type: ACTION_HANDLE_TASK_REMOVED,
-    taskSid
+    payload: {
+      queueSid,
+      taskSid
+    }
   });
   static setSelectedQueue = (selectedQueueSid) => ({
     type: ACTION_SET_SELECTED_QUEUE,
@@ -116,14 +120,17 @@ export function reduce(state = initialState, action) {
       return {
         ...state,
         queues: state.queues.map(queue => {
-          const existingTaskIndex = queue.tasks.findIndex(t => t.task_sid === action.taskSid);
-          if (existingTaskIndex >= 0) {
-            const filteredTasks = queue.tasks.filter(task => task.task_sid !== action.taskSid);
+          if (queue.queue_sid === action.payload.queueSid) {
+            const copyOfTasks = [...queue.tasks];
+            const existingTaskIndex = copyOfTasks.findIndex(t => t.task_sid === action.payload.taskSid);
+            if (existingTaskIndex > -1) {
+              copyOfTasks.splice(existingTaskIndex);
+            } 
             return {
               ...queue,
-              tasks: filteredTasks,
-              columnStats: getTaskStatsForColumns(filteredTasks, state.config)
-            };
+              tasks: copyOfTasks,
+              columnStats: getTaskStatsForColumns(copyOfTasks, state.config)
+            }
           }
           return queue;
         }),

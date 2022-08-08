@@ -131,9 +131,11 @@ export class QueueSummaryListener {
         this._updateStateTasksForQueue(queue, q.getItems());
 
         q.on('itemRemoved', (item) => {
-          this._onQueueTaskItemRemoved(item);
+          console.debug(`Queue task item removed: SID: ${item.key} | Queue: ${queue.queue_name}`);
+          this._onQueueTaskItemRemoved(queue.queue_sid, item);
         });
         q.on('itemUpdated', (item) => {
+          console.debug(`Queue task item updated: SID: ${JSON.stringify(item.value.task_sid)} | Queue: ${queue.queue_name}`);
           this._onQueueTaskItemUpdated(item);
         });
       })
@@ -144,16 +146,14 @@ export class QueueSummaryListener {
 
   _onQueueTaskItemUpdated(taskItem) {
     const task = taskItem.value;
-    console.debug(`Queue task item updated: SID: ${JSON.stringify(task.task_sid)} | Queue: ${task.queue_name}`);
     // We need to find the queue this task resides in, then update/add the task within our state
     Manager.getInstance().store.dispatch(Actions.handleTaskUpdated(task));
 
   }
 
-  _onQueueTaskItemRemoved(taskItem) {
-    console.debug(`Queue task item removed: SID: ${taskItem.key}`);
+  _onQueueTaskItemRemoved(queueSid, taskItem) {
     // We need to find the queue this task resides in, then remove the task from our state
-    Manager.getInstance().store.dispatch(Actions.handleTaskRemoved(taskItem.key));
+    Manager.getInstance().store.dispatch(Actions.handleTaskRemoved(queueSid, taskItem.key));
   }
 
   _updateStateTasksForQueue(queue, insightsTasks) {
