@@ -168,7 +168,7 @@ export class QueueSummaryListener {
   };
   
   static _constructTaskQuery(queue) {
-    return `data.queue_name == "${queue.queue_name}" AND data.status == "pending"`;
+    return `data.queue_name == "${queue.queue_name}" AND data.status IN ["pending", "reserved"]`;
   };
 }
 
