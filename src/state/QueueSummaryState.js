@@ -124,7 +124,7 @@ export function reduce(state = initialState, action) {
             const copyOfTasks = [...queue.tasks];
             const existingTaskIndex = copyOfTasks.findIndex(t => t.task_sid === action.payload.taskSid);
             if (existingTaskIndex > -1) {
-              copyOfTasks.splice(existingTaskIndex);
+              copyOfTasks.splice(existingTaskIndex, 1);
             } 
             return {
               ...queue,
